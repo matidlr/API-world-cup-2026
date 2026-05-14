@@ -148,22 +148,6 @@ Errors are normalized by `AllExceptionsFilter` and follow the same envelope with
 | `OPPONENT_MAX_STRATEGY_CHANGES_PER_MATCH` | `5` | Max AI strategy switches per match |
 | `COACH_FORMATION_STYLE_STRICTNESS` | `6` | Coach style influence (`0..10`) when selecting compatible formations |
 
-### Optional action-pool overrides (advanced)
-These variables accept comma-separated `MatchAction` values. If parsing yields fewer than 3 valid actions, defaults are used.
-
-- `MATCH_ACTIONS_NORMAL`
-- `MATCH_ACTIONS_KICKOFF_EVENT`
-- `MATCH_ACTIONS_ATTACK_EVENT`
-- `MATCH_ACTIONS_DEFENSE_EVENT`
-- `MATCH_ACTIONS_PENALTY_FOR_EVENT`
-- `MATCH_ACTIONS_PENALTY_AGAINST_EVENT`
-- `MATCH_ACTIONS_FREE_KICK_FOR_EVENT`
-- `MATCH_ACTIONS_FREE_KICK_AGAINST_EVENT`
-- `MATCH_ACTIONS_CORNER_FOR_EVENT`
-- `MATCH_ACTIONS_CORNER_AGAINST_EVENT`
-- `MATCH_ACTIONS_THROW_IN_FOR_EVENT`
-- `MATCH_ACTIONS_THROW_IN_AGAINST_EVENT`
-
 ---
 
 ## Endpoints (current controllers)
@@ -272,16 +256,6 @@ These variables accept comma-separated `MatchAction` values. If parsing yields f
   - Auto-simulates a new world cup when current tournament is missing/ended and `teamId` is provided.
 - If `teamId` is provided, it must be one of the two finalists.
 - If world cup is `FINAL_ACTIVE`, re-simulation is blocked until final is closed.
-
----
-
-## Notes for Integrators
-- Use `/reference/game-dictionary` and `/reference/coach-profiles` to avoid hardcoding labels in frontend.
-- Prefer reading actions from the response (`options`) rather than constructing action menus client-side.
-- For educational debugging, combine:
-  - `MatchResponse.currentContext`
-  - `/match/{matchId}/stats`
-  - `/match/{matchId}/squad`
 
 ---
 
