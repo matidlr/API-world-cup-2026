@@ -1,0 +1,20 @@
+<app-app-header
+  [teamName]="teamName"
+  [lang]="lang"></app-app-header>
+
+<div class="app-body">
+  <app-sidebar
+    [teamName]="teamName"
+    [teamFlag]="teamFlag"></app-sidebar>
+
+  <main class="main-area">
+    <app-topbar
+      [title]="topbarTitle"
+      [subtitle]="topbarSubtitle"
+      [activeViewId]="activeViewId"></app-topbar>
+
+    <section class="content active">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

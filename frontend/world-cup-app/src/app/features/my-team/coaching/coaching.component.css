@@ -1,0 +1,270 @@
+.coaching-layout {
+  align-items: stretch;
+}
+
+.coaching-panel {
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.coaching-panel-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 12px;
+}
+
+.coaching-current-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.coaching-current-lbl {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.coaching-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 25px;
+  padding: 0 12px;
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.4px;
+  text-align: center;
+}
+
+.coach-profile-pill-row {
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.coach-profile-summary {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-left: 2px solid var(--team-accent);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+
+.profile-chip-small {
+  font-size: 9px;
+  line-height: 1;
+  padding: 0 8px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.4px;
+}
+
+.coach-profile-summary-description {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding: 2px 1px 0;
+}
+
+.coaching-select {
+  min-width: 150px;
+  max-width: 180px;
+}
+
+.coaching-controls-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 180px) minmax(150px, 180px) minmax(180px, max-content);
+  gap: 10px;
+  align-items: start;
+}
+
+.coaching-formation-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coaching-compatibility {
+  border-top: 1px solid var(--border-color);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 230px;
+}
+
+.strategy-profile-summary {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-left: 2px solid var(--team-accent);
+  border-radius: 8px;
+  padding: 9px 11px;
+  max-width: 100%;
+}
+
+.strategy-profile-summary-spacing {
+  margin-top: 12px;
+}
+
+.strategy-profile-summary-description {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.coaching-compatibility-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.coaching-compatibility-row {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 8px;
+  align-items: start;
+  margin-bottom: 8px;
+}
+
+.coaching-compatibility-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding-top: 3px;
+}
+
+.coaching-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.coaching-chip-list .badge {
+  font-size: 10px;
+  padding: 3px 10px;
+}
+
+.coaching-reset-btn {
+  border-color: var(--team-accent);
+  color: var(--team-accent);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.coaching-reset-btn:hover:not(:disabled) {
+  background: var(--team-accent);
+  color: var(--team-accent-contrast);
+  border-color: transparent;
+}
+
+.coaching-reset-inline {
+  width: auto;
+  white-space: nowrap;
+  padding: 7px 12px;
+  font-size: 12px;
+}
+
+.coaching-team-rating-header {
+  margin-bottom: 10px;
+}
+
+.coaching-compatibility-status {
+  margin-top: auto;
+  min-height: 42px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.coaching-status-pill {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 999px;
+  letter-spacing: 0.2px;
+}
+
+.coaching-status-incompatible {
+  background: rgba(214, 78, 78, 0.26);
+  color: #ff7f75;
+  border: 1px solid rgba(255, 127, 117, 0.35);
+}
+
+.coaching-status-compatible {
+  background: rgba(84, 201, 114, 0.2);
+  color: #8fe3a8;
+  border: 1px solid rgba(143, 227, 168, 0.32);
+}
+
+.coaching-status-original {
+  background: rgba(103, 171, 236, 0.22);
+  color: #8cc4ff;
+  border: 1px solid rgba(140, 196, 255, 0.35);
+}
+
+.team-rating-delta {
+  font-size: 10px;
+  margin-left: 5px;
+  font-weight: 700;
+}
+
+.team-rating-delta-penalty {
+  margin-left: 3px;
+}
+
+.team-rating-delta-positive {
+  color: #8fe3a8;
+}
+
+.team-rating-delta-negative {
+  color: #ff7b7b;
+}
+
+.team-rating-track {
+  position: relative;
+}
+
+.team-rating-segment {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 0;
+}
+
+.team-rating-segment-positive {
+  background: rgba(84, 201, 114, 0.65);
+  border-radius: 0 4px 4px 0;
+}
+
+.team-rating-segment-negative {
+  background: rgba(214, 78, 78, 0.7);
+  border-radius: 4px 0 0 4px;
+}
+
+.team-rating-val {
+  width: 70px;
+}
+
+@media (max-width: 960px) {
+  .coaching-current-row {
+    grid-template-columns: 1fr;
+  }
+
+  .coaching-controls-row {
+    grid-template-columns: 1fr;
+  }
+
+  .coaching-compatibility-row {
+    grid-template-columns: 1fr;
+  }
+}

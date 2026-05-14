@@ -1,0 +1,32 @@
+<ng-container *ngIf="pageState as pageState">
+  <div class="empty-state" *ngIf="pageState.loading">
+    <div class="empty-icon">⏳</div>
+    <p>Cargando historial del equipo...</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!pageState.loading && pageState.errorMessage">
+    <div class="empty-icon">⚠️</div>
+    <p>{{ pageState.errorMessage }}</p>
+  </div>
+
+  <ng-container *ngIf="!pageState.loading && !pageState.errorMessage">
+    <div class="empty-state mt-16" *ngIf="pageState.titles.length === 0">
+      <div class="empty-icon">📭</div>
+      <p>No hay registros de títulos disponibles para este equipo.</p>
+    </div>
+
+    <div *ngIf="pageState.sections.length > 0">
+      <div class="card" style="margin-bottom: 14px" *ngFor="let section of pageState.sections">
+        <div class="card-header">
+          <span class="card-title">{{ section.icon }} {{ section.title }}</span>
+          <span class="badge badge-primary">{{ getTitlesBadge(section.count) }}</span>
+        </div>
+
+        <div class="title-year-chips">
+          <span class="year-chip" *ngFor="let chip of section.chips">{{ chip }}</span>
+          <span class="year-chip" *ngIf="section.chips.length === 0">Sin datos</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

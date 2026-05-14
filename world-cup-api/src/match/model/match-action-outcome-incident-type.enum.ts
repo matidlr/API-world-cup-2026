@@ -1,0 +1,5 @@
+export enum MatchActionOutcomeIncidentType {
+  PENALTY_AWARDED = 'PENALTY_AWARDED',
+  PENALTY_SAVE = 'PENALTY_SAVE',
+  OPEN_PLAY_RESTART = 'OPEN_PLAY_RESTART',
+}

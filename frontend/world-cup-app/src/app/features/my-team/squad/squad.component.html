@@ -1,0 +1,90 @@
+<section class="card">
+  <div class="card-header">
+    <span class="card-title">Plantel</span>
+    <span class="badge badge-primary">{{ pageState.selectedTeamLabel }}</span>
+  </div>
+
+  <div class="position-legend mt-12" *ngIf="pageState.positionLegend.length > 0">
+    <div class="position-legend-list">
+      <span class="position-legend-item" *ngFor="let positionLegend of pageState.positionLegend">
+        <span class="pos-tag" [ngClass]="'pos-' + positionLegend.code">{{ positionLegend.code }}</span>
+        <span class="position-legend-label">{{ positionLegend.label }}</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="filters-row mt-16">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Buscar jugador..."
+      [ngModel]="pageState.searchTerm"
+      (ngModelChange)="onSearchTermChange($event)" />
+
+    <select
+      class="form-control"
+      [ngModel]="pageState.positionFilter"
+      (ngModelChange)="onPositionFilterChange($event)">
+      <option value="ALL">Todas las posiciones</option>
+      <option value="GK">GK</option>
+      <option value="DF">DF</option>
+      <option value="MF">MF</option>
+      <option value="FW">FW</option>
+    </select>
+  </div>
+
+  <div class="info-bar mt-16" *ngIf="!pageState.loading && !pageState.errorMessage">
+    <span class="info-icon">👥</span>
+    <span>{{ getVisiblePlayersText(pageState.filteredPlayers.length, pageState.players.length) }}</span>
+    <span class="info-separator">•</span>
+    <span class="info-icon">📊</span>
+    <span>{{ getAverageAgeText(pageState.averageAgeScope, pageState.averageAge) }}</span>
+  </div>
+
+  <div class="empty-state" *ngIf="pageState.loading">
+    <div class="empty-icon">⏳</div>
+    <p>Cargando plantel...</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!pageState.loading && pageState.errorMessage">
+    <div class="empty-icon">⚠️</div>
+    <p>{{ pageState.errorMessage }}</p>
+  </div>
+
+  <section class="table-wrap mt-16" *ngIf="!pageState.loading && !pageState.errorMessage && pageState.filteredPlayers.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Jugador</th>
+          <th>Posición</th>
+          <th>Edad</th>
+          <th>Skill</th>
+          <th>Ataque</th>
+          <th>Defensa</th>
+          <th>Energía</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let player of pageState.filteredPlayers">
+          <td>{{ player.shirtNumber }}</td>
+          <td>
+            {{ player.name }}
+            <span *ngIf="player.isCaptain" class="captain-badge">(Capitán)</span>
+          </td>
+          <td><span class="pos-tag" [ngClass]="'pos-' + player.position">{{ player.position }}</span></td>
+          <td>{{ player.age }}</td>
+          <td>{{ player.skill }}</td>
+          <td>{{ player.attack }}</td>
+          <td>{{ player.defense }}</td>
+          <td>{{ player.energy }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="empty-state" *ngIf="!pageState.loading && !pageState.errorMessage && pageState.filteredPlayers.length === 0">
+    <div class="empty-icon">🧭</div>
+    <p>No hay jugadores que coincidan con el filtro actual.</p>
+  </div>
+</section>

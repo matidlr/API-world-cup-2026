@@ -1,0 +1,21 @@
+.jd-loss {
+  border-color: #f44336 !important;
+  background: rgba(244, 67, 54, 0.2) !important;
+  color: #f44336 !important;
+}
+
+.jd-draw {
+  border-color: #ffb300 !important;
+  background: rgba(255, 179, 0, 0.2) !important;
+  color: #ffb300 !important;
+}
+
+.j-loss {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+.j-draw {
+  background: rgba(255, 179, 0, 0.2);
+  color: #ffb300;
+}

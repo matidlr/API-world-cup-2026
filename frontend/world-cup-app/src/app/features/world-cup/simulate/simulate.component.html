@@ -1,0 +1,108 @@
+<ng-container *ngIf="pageState as pageState">
+  <div class="empty-state" *ngIf="pageState.loading">
+    <div class="empty-icon">⏳</div>
+    <p>Cargando datos de simulación de final...</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!pageState.loading && pageState.errorMessage">
+    <div class="empty-icon">⚠️</div>
+    <p>{{ pageState.errorMessage }}</p>
+  </div>
+
+  <div class="empty-state mt-16" *ngIf="!pageState.loading && !pageState.errorMessage && pageState.showNoSimulationState">
+    <div class="empty-icon">🏟️</div>
+    <p>Todavía no hay una final simulada disponible. Ejecutá una simulación para generar finalistas.</p>
+    <button type="button" class="btn btn-primary mt-16" (click)="onSimulate()" [disabled]="pageState.simulating">
+      <span *ngIf="!pageState.simulating">Simular Mundial</span>
+      <span *ngIf="pageState.simulating">Simulando...</span>
+    </button>
+  </div>
+
+  <ng-container *ngIf="!pageState.loading && !pageState.errorMessage && !pageState.showNoSimulationState && pageState.simulation as simulation">
+    <div class="simulate-actions-row">
+      <div class="simulate-status-row">
+        <span class="badge badge-green">{{ getStatusLabel(simulation.status) }}</span>
+        <span class="badge badge-gray" *ngIf="simulation.canResimulate">Se puede re-simular</span>
+        <span class="badge badge-gray" *ngIf="simulation.hasActiveFinal">Final activa</span>
+      </div>
+
+      <div style="display: flex; gap: 8px">
+        <button
+          type="button"
+          class="btn btn-ghost"
+          (click)="onSimulate()"
+          [disabled]="pageState.simulating || !simulation.canResimulate">
+          <span *ngIf="!pageState.simulating">Re-simular</span>
+          <span *ngIf="pageState.simulating">Simulando...</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">{{ getFinalCardTitle(simulation.edition) }}</span>
+        <span class="badge badge-gray">{{ getFinalBadgeLabel(simulation) }}</span>
+      </div>
+
+      <div class="vs-container">
+        <article class="team-card">
+          <div class="tc-flag">{{ simulation.finalHomeTeam.flag }}</div>
+          <div class="tc-name">{{ simulation.finalHomeTeam.teamName }}</div>
+
+          <div class="tc-stats">
+            <div class="tc-stat">
+              <div class="tc-val">{{ simulation.finalHomeTeam.attack }}</div>
+              <div class="tc-lbl">Ataque</div>
+            </div>
+            <div class="tc-stat">
+              <div class="tc-val">{{ simulation.finalHomeTeam.defense }}</div>
+              <div class="tc-lbl">Defensa</div>
+            </div>
+            <div class="tc-stat">
+              <div class="tc-val">{{ simulation.finalHomeTeam.midfield }}</div>
+              <div class="tc-lbl">Mediocampo</div>
+            </div>
+            <div class="tc-stat">
+              <div class="tc-val">{{ simulation.finalHomeTeam.overall }}</div>
+              <div class="tc-lbl">General</div>
+            </div>
+          </div>
+
+          <div class="tc-coach">
+            {{ getCoachLine(simulation.finalHomeTeam.coachName, simulation.finalHomeTeam.formation, simulation.finalHomeTeam.strategyLabel) }}
+          </div>
+        </article>
+
+        <div class="vs-divider">VS</div>
+
+        <article class="team-card">
+          <div class="tc-flag">{{ simulation.finalAwayTeam.flag }}</div>
+          <div class="tc-name">{{ simulation.finalAwayTeam.teamName }}</div>
+
+          <div class="tc-stats">
+            <div class="tc-stat">
+              <div class="tc-val">{{ simulation.finalAwayTeam.attack }}</div>
+              <div class="tc-lbl">Ataque</div>
+            </div>
+            <div class="tc-stat">
+              <div class="tc-val">{{ simulation.finalAwayTeam.defense }}</div>
+              <div class="tc-lbl">Defensa</div>
+            </div>
+            <div class="tc-stat">
+              <div class="tc-val">{{ simulation.finalAwayTeam.midfield }}</div>
+              <div class="tc-lbl">Mediocampo</div>
+            </div>
+            <div class="tc-stat">
+              <div class="tc-val">{{ simulation.finalAwayTeam.overall }}</div>
+              <div class="tc-lbl">General</div>
+            </div>
+          </div>
+
+          <div class="tc-coach">
+            {{ getCoachLine(simulation.finalAwayTeam.coachName, simulation.finalAwayTeam.formation, simulation.finalAwayTeam.strategyLabel) }}
+          </div>
+        </article>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

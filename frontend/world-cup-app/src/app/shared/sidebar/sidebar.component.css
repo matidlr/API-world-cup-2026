@@ -1,0 +1,12 @@
+:host {
+  display: contents;
+}
+
+button.nav-item {
+  width: 100%;
+  background: transparent;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  text-align: left;
+}

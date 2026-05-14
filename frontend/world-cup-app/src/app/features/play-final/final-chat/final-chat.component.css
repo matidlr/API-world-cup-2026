@@ -1,0 +1,138 @@
+.score-team-flag {
+  font-size: 13px;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.score-teams-matchup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.score-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.score-vs {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.tactical-list {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+.tactical-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tactical-item-label {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.tactical-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.tactical-pill-neutral {
+  background: rgba(120, 132, 164, 0.22);
+  border-color: rgba(136, 151, 189, 0.36);
+  color: #d3ddf5;
+}
+
+.tactical-pill-info {
+  background: rgba(103, 171, 236, 0.22);
+  border-color: rgba(140, 196, 255, 0.35);
+  color: #8cc4ff;
+}
+
+.tactical-pill-success {
+  background: rgba(84, 201, 114, 0.2);
+  border-color: rgba(143, 227, 168, 0.32);
+  color: #8fe3a8;
+}
+
+.tactical-pill-warning {
+  background: rgba(222, 176, 95, 0.22);
+  border-color: rgba(241, 197, 117, 0.34);
+  color: #ffd89c;
+}
+
+.tactical-pill-danger {
+  background: rgba(214, 78, 78, 0.26);
+  border-color: rgba(255, 127, 117, 0.35);
+  color: #ff9d9d;
+}
+
+.quick-options-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quick-option-btn {
+  width: auto;
+  border-radius: 12px;
+  border-width: 1px;
+  padding: 8px 14px;
+  font-weight: 700;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.quick-option-btn-primary {
+  background: rgba(95, 148, 204, 0.15);
+  border-color: rgba(95, 148, 204, 0.35);
+  color: #b8d9ff;
+}
+
+.quick-option-btn-primary:hover:not(:disabled) {
+  background: rgba(95, 148, 204, 0.25);
+  border-color: rgba(120, 178, 242, 0.52);
+  color: #d4e9ff;
+}
+
+.quick-option-btn-accent {
+  background: rgba(118, 141, 226, 0.18);
+  border-color: rgba(118, 141, 226, 0.38);
+  color: #c8d5ff;
+}
+
+.quick-option-btn-accent:hover:not(:disabled) {
+  background: rgba(118, 141, 226, 0.3);
+  border-color: rgba(136, 162, 255, 0.56);
+  color: #e0e7ff;
+}
+
+.quick-option-btn-danger {
+  background: rgba(210, 88, 88, 0.14);
+  border-color: rgba(210, 88, 88, 0.42);
+  color: #ff9d9d;
+}
+
+.quick-option-btn-danger:hover:not(:disabled) {
+  background: rgba(210, 88, 88, 0.26);
+  border-color: rgba(240, 110, 110, 0.64);
+  color: #ffd2d2;
+}

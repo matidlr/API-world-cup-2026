@@ -1,0 +1,36 @@
+<aside class="sidebar">
+  <div class="team-identity">
+    <div class="team-crest">{{ teamFlag }}</div>
+    <div class="team-info">
+      <h1>{{ teamName }}</h1>
+      <div class="team-meta">World Cup 2026</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ng-container *ngFor="let section of sections">
+      <div class="nav-section-label">{{ section.title }}</div>
+
+      <button
+        *ngFor="let item of section.items"
+        type="button"
+        class="nav-item"
+        [routerLink]="'/' + item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+        <span class="nav-icon">{{ item.icon }}</span>
+        {{ item.label }}
+      </button>
+    </ng-container>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="tournament-badge">
+      <div class="t-trophy">🏆</div>
+      <div>
+        <div class="t-name">FIFA World Cup</div>
+        <div class="t-year">Edición 2026</div>
+      </div>
+    </div>
+  </div>
+</aside>
