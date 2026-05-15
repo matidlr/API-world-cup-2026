@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AdminService } from '../../admin/admin.service';
 import { AbstractBaseService } from '../../basic/abstract-base.service';
+import { ApiErrorMappingRule, ApiErrorStatusMap, ErrorUtils } from '../../basic/error/error.utils';
 import { normalizeCount, normalizeStringArray } from '../../basic/helpers/normalize.helper';
 import { LanguageEnum } from '../../basic/model/language.enum';
+import { WorldCupCoreErrorCode } from '../../basic/model/world-cup-core-error-code.enum';
 import { WorldCupFeatureApiService } from '../../basic/world-cup-feature-api.service';
 import {
   TeamHistoryApiResponse,
@@ -13,6 +15,23 @@ import {
   TeamHistorySectionModel,
   TeamHistoryTitleItemModel,
 } from './model/team-history-service.model';
+
+const TEAM_HISTORY_API_ERROR_STATUS_MAP: ApiErrorStatusMap = {
+  [HttpStatus.NOT_FOUND]: {
+    messageCode: WorldCupCoreErrorCode.WC_TEAM_HISTORY_UNAVAILABLE,
+    message: 'Team history for the selected team was not found.',
+  },
+  [HttpStatus.CONFLICT]: {
+    messageCode: WorldCupCoreErrorCode.WC_TEAM_HISTORY_UNAVAILABLE,
+    message: 'Team history is not available right now. Try again in a moment.',
+  },
+};
+
+const TEAM_HISTORY_API_ERROR_FALLBACK: ApiErrorMappingRule = {
+  messageCode: WorldCupCoreErrorCode.WC_TEAM_HISTORY_UNAVAILABLE,
+  message: 'Unable to load team history from World Cup API.',
+  statusCode: HttpStatus.BAD_GATEWAY,
+};
 
 @Injectable()
 export class TeamHistoryService extends AbstractBaseService {
@@ -26,23 +45,31 @@ export class TeamHistoryService extends AbstractBaseService {
 
   /** Returns title history for the currently selected team. */
   public async getHistory(lang?: string): Promise<TeamHistoryScreenModel> {
-    const teamId = this.getCurrentTeamId();
-    const resolvedLang = this.resolveLang(lang);
-    const history: TeamHistoryApiResponse = await this.worldCupFeatureApiService.getTeamHistory(
-      teamId,
-      resolvedLang,
-    );
-    const titles = this.mapAndSortTitles(history?.titles ?? []);
-    const sections = this.buildSections(titles, resolvedLang);
+    try {
+      const teamId = this.getCurrentTeamId();
+      const resolvedLang = this.resolveLang(lang);
+      const history: TeamHistoryApiResponse = await this.worldCupFeatureApiService.getTeamHistory(
+        teamId,
+        resolvedLang,
+      );
+      const titles = this.mapAndSortTitles(history?.titles ?? []);
+      const sections = this.buildSections(titles, resolvedLang);
 
-    return new TeamHistoryScreenModel({
-      teamId,
-      totalTitles: titles.reduce((accumulator, currentTitle) => accumulator + currentTitle.count, 0),
-      totalCompetitions: titles.length,
-      organizations: this.extractOrganizations(titles),
-      titles,
-      sections,
-    });
+      return new TeamHistoryScreenModel({
+        teamId,
+        totalTitles: titles.reduce((accumulator, currentTitle) => accumulator + currentTitle.count, 0),
+        totalCompetitions: titles.length,
+        organizations: this.extractOrganizations(titles),
+        titles,
+        sections,
+      });
+    } catch (error) {
+      ErrorUtils.mapWorldCupApiError(
+        error,
+        TEAM_HISTORY_API_ERROR_STATUS_MAP,
+        TEAM_HISTORY_API_ERROR_FALLBACK,
+      );
+    }
   }
 
   /** Maps API title payload into a stable screen-friendly structure and sorting. */

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SquadAverageAgeScopeEnum } from './model/squad-average-age-scope.enum';
 import { SquadService } from './service/squad.service';
-import { SquadPositionFilter } from './model/squad-position-filter.type';
+import { SquadPositionFilterEnum } from './model/squad-position-filter.enum';
 import { SquadViewModel } from './model/squad-view-model.interface';
 
 @Component({
@@ -11,6 +11,8 @@ import { SquadViewModel } from './model/squad-view-model.interface';
   styleUrls: ['./squad.component.css'],
 })
 export class SquadPageComponent implements OnInit {
+  readonly squadPositionFilterEnum = SquadPositionFilterEnum;
+
   constructor(private readonly squadService: SquadService) {}
 
   get pageState(): SquadViewModel {
@@ -25,7 +27,7 @@ export class SquadPageComponent implements OnInit {
     this.squadService.setSearchTerm(searchTerm);
   }
 
-  onPositionFilterChange(positionFilter: SquadPositionFilter): void {
+  onPositionFilterChange(positionFilter: SquadPositionFilterEnum): void {
     this.squadService.setPositionFilter(positionFilter);
   }
 

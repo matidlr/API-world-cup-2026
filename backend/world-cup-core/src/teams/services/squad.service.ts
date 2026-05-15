@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AdminService } from '../../admin/admin.service';
 import { AbstractBaseService } from '../../basic/abstract-base.service';
+import { ApiErrorMappingRule, ApiErrorStatusMap, ErrorUtils } from '../../basic/error/error.utils';
 import { normalizeSearchTerm } from '../../basic/helpers/normalize.helper';
+import { WorldCupCoreErrorCode } from '../../basic/model/world-cup-core-error-code.enum';
 import { WorldCupFeatureApiService } from '../../basic/world-cup-feature-api.service';
 import { SquadAverageAgeScopeEnum } from './model/squad-average-age-scope.enum';
 import { SquadPositionFilterEnum } from './model/squad-service.enum';
@@ -15,6 +17,23 @@ import {
   SquadPlayersModel,
   SquadPositionLegendModel,
 } from './model/squad-service.model';
+
+const SQUAD_API_ERROR_STATUS_MAP: ApiErrorStatusMap = {
+  [HttpStatus.NOT_FOUND]: {
+    messageCode: WorldCupCoreErrorCode.WC_SQUAD_UNAVAILABLE,
+    message: 'Squad data for the selected team was not found.',
+  },
+  [HttpStatus.CONFLICT]: {
+    messageCode: WorldCupCoreErrorCode.WC_SQUAD_UNAVAILABLE,
+    message: 'Squad data is not available right now. Try again in a moment.',
+  },
+};
+
+const SQUAD_API_ERROR_FALLBACK: ApiErrorMappingRule = {
+  messageCode: WorldCupCoreErrorCode.WC_SQUAD_UNAVAILABLE,
+  message: 'Unable to load squad data from World Cup API.',
+  statusCode: HttpStatus.BAD_GATEWAY,
+};
 
 @Injectable()
 export class SquadService extends AbstractBaseService {
@@ -32,30 +51,34 @@ export class SquadService extends AbstractBaseService {
     searchTerm?: string,
     position?: string,
   ): Promise<SquadPlayersModel> {
-    const teamId = this.getCurrentTeamId();
-    const playersResponse = await this.worldCupFeatureApiService.getTeamPlayers(teamId, lang);
-    const dictionaryResponse = await this.worldCupFeatureApiService.getGameDictionary(lang);
-    const players = this.mapAndSortPlayers(playersResponse as SquadPlayerApiItem[]);
-    const positionLegend = this.buildPositionLegend(dictionaryResponse);
-    const normalizedSearchTerm = normalizeSearchTerm(searchTerm);
-    const normalizedPositionFilter = this.parsePositionFilter(position);
-    const filteredPlayers = this.filterPlayers(players, normalizedSearchTerm, normalizedPositionFilter);
-    const averageAge = this.calculateSquadAge(players, normalizedPositionFilter);
-    const averageAgeScope = this.getAverageAgeScope(normalizedPositionFilter);
+    try {
+      const teamId = this.getCurrentTeamId();
+      const playersResponse = await this.worldCupFeatureApiService.getTeamPlayers(teamId, lang);
+      const dictionaryResponse = await this.worldCupFeatureApiService.getGameDictionary(lang);
+      const players = this.mapAndSortPlayers(playersResponse as SquadPlayerApiItem[]);
+      const positionLegend = this.buildPositionLegend(dictionaryResponse);
+      const normalizedSearchTerm = normalizeSearchTerm(searchTerm);
+      const normalizedPositionFilter = this.parsePositionFilter(position);
+      const filteredPlayers = this.filterPlayers(players, normalizedSearchTerm, normalizedPositionFilter);
+      const averageAge = this.calculateSquadAge(players, normalizedPositionFilter);
+      const averageAgeScope = this.getAverageAgeScope(normalizedPositionFilter);
 
-    return new SquadPlayersModel({
-      players,
-      filteredPlayers,
-      totalPlayers: players.length,
-      visiblePlayers: filteredPlayers.length,
-      averageAge,
-      averageAgeScope,
-      positionLegend,
-      appliedFilters: new SquadAppliedFiltersModel({
-        searchTerm: normalizedSearchTerm,
-        positionFilter: normalizedPositionFilter,
-      }),
-    });
+      return new SquadPlayersModel({
+        players,
+        filteredPlayers,
+        totalPlayers: players.length,
+        visiblePlayers: filteredPlayers.length,
+        averageAge,
+        averageAgeScope,
+        positionLegend,
+        appliedFilters: new SquadAppliedFiltersModel({
+          searchTerm: normalizedSearchTerm,
+          positionFilter: normalizedPositionFilter,
+        }),
+      });
+    } catch (error) {
+      ErrorUtils.mapWorldCupApiError(error, SQUAD_API_ERROR_STATUS_MAP, SQUAD_API_ERROR_FALLBACK);
+    }
   }
 
   /** Builds a lightweight position legend (GK/DF/MF/FW) from the game dictionary endpoint. */

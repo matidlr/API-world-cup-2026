@@ -1,0 +1,18 @@
+.team-history-sections {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.team-history-card {
+  margin-bottom: 0;
+}
+
+.title-year-chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

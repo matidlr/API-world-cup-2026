@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { AxiosError } from 'axios';
 import { AdminService } from '../../admin/admin.service';
 import { AbstractBaseService } from '../../basic/abstract-base.service';
+import { ApiErrorMappingRule, ApiErrorStatusMap, ErrorUtils } from '../../basic/error/error.utils';
 import { normalizeNonNegativeNumber } from '../../basic/helpers/normalize.helper';
 import { LanguageEnum } from '../../basic/model/language.enum';
+import { WorldCupCoreErrorCode } from '../../basic/model/world-cup-core-error-code.enum';
 import { WorldCupFeatureApiService } from '../../basic/world-cup-feature-api.service';
 import {
   CurrentWorldCupApiResponse,
@@ -12,6 +13,28 @@ import {
   TeamCatalogApiItem,
   TeamStatsApiResponse,
 } from './model/simulation-service.interface';
+
+const SIMULATION_UNAVAILABLE_MESSAGE =
+  'World Cup simulation is not available yet. Run simulation first.';
+
+const SIMULATION_API_ERROR_STATUS_MAP: ApiErrorStatusMap = {
+  [HttpStatus.NOT_FOUND]: {
+    messageCode: WorldCupCoreErrorCode.WC_SIMULATION_UNAVAILABLE,
+    message: SIMULATION_UNAVAILABLE_MESSAGE,
+    statusCode: HttpStatus.CONFLICT,
+  },
+  [HttpStatus.CONFLICT]: {
+    messageCode: WorldCupCoreErrorCode.WC_SIMULATION_UNAVAILABLE,
+    message: SIMULATION_UNAVAILABLE_MESSAGE,
+    statusCode: HttpStatus.CONFLICT,
+  },
+};
+
+const SIMULATION_API_ERROR_FALLBACK: ApiErrorMappingRule = {
+  messageCode: WorldCupCoreErrorCode.WC_SIMULATION_FETCH_FAILED,
+  message: 'Unable to load simulation data from World Cup API.',
+  statusCode: HttpStatus.BAD_GATEWAY,
+};
 
 @Injectable()
 export class SimulationService extends AbstractBaseService {
@@ -41,29 +64,39 @@ export class SimulationService extends AbstractBaseService {
       if (error instanceof HttpException) {
         throw error;
       }
-
-      if (this.isNoSimulationError(error)) {
-        throw this.createSimulationUnavailableException();
-      }
-
-      throw error;
+      ErrorUtils.mapWorldCupApiError(
+        error,
+        SIMULATION_API_ERROR_STATUS_MAP,
+        SIMULATION_API_ERROR_FALLBACK,
+      );
     }
   }
 
   /** Simulates a new world cup using the selected team as the user team. */
   public async simulate(): Promise<SimulationScreenResponse> {
-    const teamId = this.getCurrentTeamId();
-    const lang = this.resolveLang();
-    const worldCup: CurrentWorldCupApiResponse = await this.worldCupFeatureApiService.simulateWorldCup(
-      teamId,
-      lang,
-    );
+    try {
+      const teamId = this.getCurrentTeamId();
+      const lang = this.resolveLang();
+      const worldCup: CurrentWorldCupApiResponse = await this.worldCupFeatureApiService.simulateWorldCup(
+        teamId,
+        lang,
+      );
 
-    if (!this.hasFinalists(worldCup)) {
-      throw this.createSimulationUnavailableException();
+      if (!this.hasFinalists(worldCup)) {
+        throw this.createSimulationUnavailableException();
+      }
+
+      return this.buildSimulationScreen(worldCup, lang);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      ErrorUtils.mapWorldCupApiError(
+        error,
+        SIMULATION_API_ERROR_STATUS_MAP,
+        SIMULATION_API_ERROR_FALLBACK,
+      );
     }
-
-    return this.buildSimulationScreen(worldCup, lang);
   }
 
   /** Builds the simulation payload required by the front-end screen. */
@@ -149,23 +182,12 @@ export class SimulationService extends AbstractBaseService {
     );
   }
 
-  /** Detects API statuses used when there is no current world cup simulation. */
-  private isNoSimulationError(error: unknown): boolean {
-    const axiosError = error as AxiosError;
-    if (!axiosError?.isAxiosError) {
-      return false;
-    }
-
-    const statusCode = axiosError.response?.status;
-    return statusCode === 404 || statusCode === 409;
-  }
-
   /** Creates a business exception consumed by frontend empty-state logic. */
   private createSimulationUnavailableException(): HttpException {
     return new HttpException(
       {
-        messageCode: 'WC_SIMULATION_UNAVAILABLE',
-        message: 'World Cup simulation is not available yet. Run simulation first.',
+        messageCode: WorldCupCoreErrorCode.WC_SIMULATION_UNAVAILABLE,
+        message: SIMULATION_UNAVAILABLE_MESSAGE,
       },
       HttpStatus.CONFLICT,
     );

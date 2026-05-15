@@ -13,7 +13,7 @@ import { BaseApiService } from '../../../../core/services/base-api.service';
 import { AdminService } from '../../../../shared/admin/service/admin.service';
 import { SquadAverageAgeScopeEnum } from '../model/squad-average-age-scope.enum';
 import { SquadPlayersApiResponse } from '../model/squad-api.interface';
-import { SquadPositionFilter } from '../model/squad-position-filter.type';
+import { SquadPositionFilterEnum } from '../model/squad-position-filter.enum';
 import { SquadViewModel } from '../model/squad-view-model.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -28,7 +28,7 @@ export class SquadService extends BaseApiService {
     loading: false,
     errorMessage: '',
     searchTerm: '',
-    positionFilter: 'ALL',
+    positionFilter: SquadPositionFilterEnum.ALL,
     lang: 'es',
     selectedTeamLabel: 'ARG',
     positionLegend: [],
@@ -67,13 +67,15 @@ export class SquadService extends BaseApiService {
     this.loadPlayers(this.pageState.searchTerm, this.pageState.positionFilter).subscribe();
   }
 
-  setPositionFilter(positionFilter: SquadPositionFilter): void {
-    const allowedFilters: SquadPositionFilter[] = ['ALL', 'GK', 'DF', 'MF', 'FW'];
-    this.pageState.positionFilter = allowedFilters.includes(positionFilter) ? positionFilter : 'ALL';
+  setPositionFilter(positionFilter: SquadPositionFilterEnum): void {
+    const allowedFilters = Object.values(SquadPositionFilterEnum);
+    this.pageState.positionFilter = allowedFilters.includes(positionFilter)
+      ? positionFilter
+      : SquadPositionFilterEnum.ALL;
     this.loadPlayers(this.pageState.searchTerm, this.pageState.positionFilter).subscribe();
   }
 
-  private loadPlayers(searchTerm: string, positionFilter: SquadPositionFilter): Observable<void> {
+  private loadPlayers(searchTerm: string, positionFilter: SquadPositionFilterEnum): Observable<void> {
     const lang = this.getCurrentLang();
     this.pageState.lang = lang;
     this.pageState.loading = true;

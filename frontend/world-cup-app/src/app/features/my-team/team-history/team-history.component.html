@@ -15,18 +15,18 @@
       <p>No hay registros de títulos disponibles para este equipo.</p>
     </div>
 
-    <div *ngIf="pageState.sections.length > 0">
-      <div class="card" style="margin-bottom: 14px" *ngFor="let section of pageState.sections">
+    <ul class="team-history-sections" *ngIf="pageState.sections.length > 0">
+      <li class="card team-history-card" *ngFor="let section of pageState.sections">
         <div class="card-header">
           <span class="card-title">{{ section.icon }} {{ section.title }}</span>
           <span class="badge badge-primary">{{ getTitlesBadge(section.count) }}</span>
         </div>
 
-        <div class="title-year-chips">
-          <span class="year-chip" *ngFor="let chip of section.chips">{{ chip }}</span>
-          <span class="year-chip" *ngIf="section.chips.length === 0">Sin datos</span>
-        </div>
-      </div>
-    </div>
+        <ul class="title-year-chips">
+          <li class="year-chip" *ngFor="let chip of section.chips">{{ chip }}</li>
+          <li class="year-chip" *ngIf="section.chips.length === 0">Sin datos</li>
+        </ul>
+      </li>
+    </ul>
   </ng-container>
 </ng-container>

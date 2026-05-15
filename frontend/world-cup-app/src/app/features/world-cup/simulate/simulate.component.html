@@ -26,8 +26,10 @@
         <span class="badge badge-gray" *ngIf="simulation.hasActiveFinal">Final activa</span>
       </div>
 
-      <div style="display: flex; gap: 8px">
+      <form class="simulate-actions-controls" (submit)="$event.preventDefault()">
+        <label class="visually-hidden-label" for="simulate-resimulate-button">Re-simular Mundial</label>
         <button
+          id="simulate-resimulate-button"
           type="button"
           class="btn btn-ghost"
           (click)="onSimulate()"
@@ -35,7 +37,7 @@
           <span *ngIf="!pageState.simulating">Re-simular</span>
           <span *ngIf="pageState.simulating">Simulando...</span>
         </button>
-      </div>
+      </form>
     </div>
 
     <div class="card">

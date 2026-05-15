@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AbstractController } from '../../basic/abstract.controller';
+import { TeamHistoryQueryRequest } from './request/team-history-query.request';
 import { TeamHistoryService } from '../services/team-history.service';
 
 @ApiTags('my-team')
@@ -15,7 +16,7 @@ export class TeamHistoryController extends AbstractController {
   @Get('history')
   @ApiOperation({ summary: 'My Team - Team history component' })
   @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
-  public async getHistory(@Query('lang') lang?: string): Promise<unknown> {
-    return this.createOkResponse(await this.teamHistoryService.getHistory(lang));
+  public async getHistory(@Query() request: TeamHistoryQueryRequest): Promise<unknown> {
+    return this.createOkResponse(await this.teamHistoryService.getHistory(request.lang));
   }
 }

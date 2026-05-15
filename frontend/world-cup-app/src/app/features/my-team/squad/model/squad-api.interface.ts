@@ -1,6 +1,6 @@
 import { SquadPlayer } from './squad-player.interface';
 import { SquadAverageAgeScopeEnum } from './squad-average-age-scope.enum';
-import { SquadPositionFilter } from './squad-position-filter.type';
+import { SquadPositionFilterEnum } from './squad-position-filter.enum';
 
 export interface SquadPositionLegendItem {
   code: string;
@@ -18,6 +18,6 @@ export interface SquadPlayersApiResponse {
   positionLegend: SquadPositionLegendItem[];
   appliedFilters: {
     searchTerm: string;
-    positionFilter: SquadPositionFilter;
+    positionFilter: SquadPositionFilterEnum;
   };
 }

@@ -5,33 +5,39 @@
   </div>
 
   <div class="position-legend mt-12" *ngIf="pageState.positionLegend.length > 0">
-    <div class="position-legend-list">
-      <span class="position-legend-item" *ngFor="let positionLegend of pageState.positionLegend">
+    <ul class="position-legend-list">
+      <li class="position-legend-item" *ngFor="let positionLegend of pageState.positionLegend">
         <span class="pos-tag" [ngClass]="'pos-' + positionLegend.code">{{ positionLegend.code }}</span>
         <span class="position-legend-label">{{ positionLegend.label }}</span>
-      </span>
-    </div>
+      </li>
+    </ul>
   </div>
 
-  <div class="filters-row mt-16">
+  <form class="filters-row mt-16" (submit)="$event.preventDefault()">
+    <label class="visually-hidden-label" for="squad-search-input">Buscar jugador</label>
     <input
+      id="squad-search-input"
+      name="searchTerm"
       type="text"
       class="form-control"
       placeholder="Buscar jugador..."
       [ngModel]="pageState.searchTerm"
       (ngModelChange)="onSearchTermChange($event)" />
 
+    <label class="visually-hidden-label" for="squad-position-filter">Filtrar por posición</label>
     <select
+      id="squad-position-filter"
+      name="positionFilter"
       class="form-control"
       [ngModel]="pageState.positionFilter"
       (ngModelChange)="onPositionFilterChange($event)">
-      <option value="ALL">Todas las posiciones</option>
-      <option value="GK">GK</option>
-      <option value="DF">DF</option>
-      <option value="MF">MF</option>
-      <option value="FW">FW</option>
+      <option [ngValue]="squadPositionFilterEnum.ALL">Todas las posiciones</option>
+      <option [ngValue]="squadPositionFilterEnum.GK">GK</option>
+      <option [ngValue]="squadPositionFilterEnum.DF">DF</option>
+      <option [ngValue]="squadPositionFilterEnum.MF">MF</option>
+      <option [ngValue]="squadPositionFilterEnum.FW">FW</option>
     </select>
-  </div>
+  </form>
 
   <div class="info-bar mt-16" *ngIf="!pageState.loading && !pageState.errorMessage">
     <span class="info-icon">👥</span>

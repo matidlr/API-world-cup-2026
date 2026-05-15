@@ -7,6 +7,14 @@ export interface ExceptionDetails {
   message: string;
 }
 
+export interface ApiErrorMappingRule {
+  messageCode: string;
+  message: string;
+  statusCode?: HttpStatus;
+}
+
+export type ApiErrorStatusMap = Partial<Record<number, ApiErrorMappingRule>>;
+
 export class ErrorUtils {
   public static extractExceptionDetails(exception: unknown): ExceptionDetails {
     if (exception instanceof HttpException) {
@@ -79,5 +87,31 @@ export class ErrorUtils {
     const url = typeof typedRequest.url === 'string' ? typedRequest.url : 'UNKNOWN';
 
     return `${method} ${url}`;
+  }
+
+  public static mapWorldCupApiError(
+    error: unknown,
+    statusMap: ApiErrorStatusMap,
+    fallbackRule: ApiErrorMappingRule,
+  ): never {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+
+    const axiosError = error as AxiosError;
+    if (!axiosError?.isAxiosError) {
+      throw error;
+    }
+
+    const upstreamStatusCode = axiosError.response?.status ?? HttpStatus.BAD_GATEWAY;
+    const rule = statusMap[upstreamStatusCode] ?? fallbackRule;
+
+    throw new HttpException(
+      {
+        messageCode: rule.messageCode,
+        message: rule.message,
+      },
+      rule.statusCode ?? upstreamStatusCode,
+    );
   }
 }
