@@ -6,24 +6,24 @@ import { WorldCupFeatureApiService } from 'src/basic/world-cup-feature-api.servi
 import { WorldCupCoreErrorCode } from 'src/basic/model/world-cup-core-error-code.enum';
 import { ApiErrorMappingRule, ApiErrorStatusMap } from 'src/basic/error/error.utils';
 
-const SIMULATION_UNAVAILABLE_MESSAGE =
+const PLAY_FINAL_UNAVAILABLE_MESSAGE =
   'World Cup simulation is not available yet. Run simulation first.';
 
 const SIMULATION_API_ERROR_STATUS_MAP: ApiErrorStatusMap = {
   [HttpStatus.NOT_FOUND]: {
     messageCode: WorldCupCoreErrorCode.WC_PLAY_FINAL_UNAVAILABLE,
-    message: SIMULATION_UNAVAILABLE_MESSAGE,
+    message: PLAY_FINAL_UNAVAILABLE_MESSAGE,
     statusCode: HttpStatus.CONFLICT,
   },
   [HttpStatus.CONFLICT]: {
-    messageCode: WorldCupCoreErrorCode.WC_SIMULATION_UNAVAILABLE,
-    message: SIMULATION_UNAVAILABLE_MESSAGE,
+    messageCode: WorldCupCoreErrorCode.WC_PLAY_FINAL_UNAVAILABLE,
+    message: PLAY_FINAL_UNAVAILABLE_MESSAGE,
     statusCode: HttpStatus.CONFLICT,
   },
 };
 
-const SIMULATION_API_ERROR_FALLBACK: ApiErrorMappingRule = {
-  messageCode: WorldCupCoreErrorCode.WC_SIMULATION_FETCH_FAILED,
+const PLAY_FINAL_API_ERROR_FALLBACK: ApiErrorMappingRule = {
+  messageCode: WorldCupCoreErrorCode.WC_PLAY_FINAL_FETCH_FAILED,
   message: 'Unable to load simulation data from World Cup API.',
   statusCode: HttpStatus.BAD_GATEWAY,
 };
@@ -43,7 +43,7 @@ export class PlayFinalService extends AbstractBaseService {
       );
 
       if (!this.hasFinalists(worldCup)) {
-        throw this.createSimulationUnavailableException();
+        throw this.createPlayFinalUnavailableException();
       }
 
       return this.buildSimulationScreen(worldCup, resolvedLang);
@@ -61,11 +61,11 @@ export class PlayFinalService extends AbstractBaseService {
     );
   }
 
-  private createSimulationUnavailableException(): HttpException {
+  private createPlayFinalUnavailableException(): HttpException {
       return new HttpException(
         {
           messageCode: WorldCupCoreErrorCode.WC_PLAY_FINAL_UNAVAILABLE,
-          message: SIMULATION_UNAVAILABLE_MESSAGE,
+          message: PLAY_FINAL_UNAVAILABLE_MESSAGE,
         },
         HttpStatus.CONFLICT,
       );
