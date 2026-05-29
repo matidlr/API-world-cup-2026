@@ -2,14 +2,14 @@ import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { AdminService } from 'src/admin/admin.service';
 import { AbstractBaseService } from 'src/basic/abstract-base.service';
 import { CurrentWorldCupApiResponse } from '../model/play-final-service.interface';
-import { WorldCupFeatureApiService } from 'src/basic/world-cup-feature-api.service';
+import { WorldCupApiService } from 'src/basic/world-cup-api.service';
 import { WorldCupCoreErrorCode } from 'src/basic/model/world-cup-core-error-code.enum';
-import { ApiErrorMappingRule, ApiErrorStatusMap } from 'src/basic/error/error.utils';
+import { ApiErrorMappingRule, ApiErrorStatusMap, ErrorUtils } from 'src/basic/error/error.utils';
 
 const PLAY_FINAL_UNAVAILABLE_MESSAGE =
   'World Cup simulation is not available yet. Run simulation first.';
 
-const SIMULATION_API_ERROR_STATUS_MAP: ApiErrorStatusMap = {
+const PLAY_FINAL_API_ERROR_STATUS_MAP: ApiErrorStatusMap = {
   [HttpStatus.NOT_FOUND]: {
     messageCode: WorldCupCoreErrorCode.WC_PLAY_FINAL_UNAVAILABLE,
     message: PLAY_FINAL_UNAVAILABLE_MESSAGE,
@@ -75,25 +75,72 @@ interface PlayFinalRawResponse {
 
 @Injectable()
 export class PlayFinalService extends AbstractBaseService {
-  constructor( private readonly worldCupfeatureApiService: WorldCupFeatureApiService, 
+  constructor(  worldCupApiService: WorldCupApiService, 
                adminService: AdminService
-  ){super(adminService)}
+  ){super(adminService, worldCupApiService)}
 
   public async getCurrentFinal(lang?: string): Promise<CurrentWorldCupApiResponse>{
-    const resolvedLang = this.resolveLang(lang);
+    
     try {
+      const resolvedLang = this.resolveLang(lang);
+      const teamId = this.getCurrentTeamId();
 
-          const worldCup: CurrentWorldCupApiResponse = await this.worldCupfeatureApiService.getCurrentWorldCup(
-        resolvedLang,
-      );
+          const final =  await this.postEndpointData<PlayFinalRawResponse>('/match/start-final', {resolvedLang, teamId});
 
-      if (!this.hasFinalists(worldCup)) {
-        throw this.createPlayFinalUnavailableException();
-      }
+      return {
+         matchId: final.matchId,
+         teamId: final.teamId,
+         opponentId: final.opponentId,
+         teamName: final.teamName,
+         opponentName: final.opponentName,
 
-      return this.buildSimulationScreen(worldCup, resolvedLang);
+      messageItems: final.messageItems.map(item => ({
+        messageKey: item.messageKey,
+        type: item.type,
+        text: item.text,
+        minute: item.minute,
+        turn: item.turn,
+        teamId: item.teamId,
+        teamName: item.teamName,
+        playerName: item.playerName
+      })),
+
+      score: final.score,
+      minute: final.minute,
+      turn: final.turn,
+      zone: final.zone,
+      possession: final.possession,
+      ballCarrier: final.ballCarrier,
+
+      teamStrategy: final.teamStrategy,
+      teamFormation: final.teamFormation,
+      teamCoachName: final.teamCoachName,
+      teamCoachProfile: final.teamCoachProfile,
+
+      opponentStrategy: final.opponentStrategy,
+      opponentFormation: final.opponentFormation,
+      opponentCoachName: final.opponentCoachName,
+      opponentCoachProfile: final.opponentCoachProfile,
+
+      eventType: final.eventType,
+
+      options: final.options.map(option => ({
+        index: option.index,
+        label: option.label,
+        action: option.action
+      })),
+
+      isFinished: final.isFinished,
+      result: final.result,
+      currentContext: final.currentContext
+    };
+       
     } catch (error) {
-      
+      ErrorUtils.mapWorldCupApiError(
+              error,
+              PLAY_FINAL_API_ERROR_STATUS_MAP,
+              PLAY_FINAL_API_ERROR_FALLBACK,
+            );
     }
   }
 
@@ -115,6 +162,8 @@ export class PlayFinalService extends AbstractBaseService {
         HttpStatus.CONFLICT,
       );
     }
+
+    
 }
 
 
