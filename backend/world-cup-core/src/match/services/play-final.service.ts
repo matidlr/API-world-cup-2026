@@ -30,47 +30,47 @@ const PLAY_FINAL_API_ERROR_FALLBACK: ApiErrorMappingRule = {
 
 interface PlayFinalRawResponse {
   matchId: string,
-  "teamId": "arg",
-  "opponentId": "fra",
-  "teamName": "Argentina",
-  "opponentName": "France",
-  "messageItems": [
+  teamId: string,
+  opponentId: string,
+  teamName: string,
+  opponentName: string,
+  messageItems: [
     {
-      "messageKey": "match.start.kickoff.variant.2",
-      "type": "SUBSTITUTION",
-      "text": "Argentina substitution: Leandro Paredes replaces Rodrigo De Paul.",
-      "minute": 53,
-      "turn": 4,
-      "teamId": "arg",
-      "teamName": "Argentina",
-      "playerName": "Leandro Paredes"
+      messageKey: string,
+      type: string,
+      text: string,
+      minute: number,
+      turn: number,
+      teamId: string,
+      teamName: string,
+      playerName: string
     }
   ],
-  "score": "1-0",
-  "minute": 35,
-  "turn": 3,
-  "zone": "MIDFIELD",
-  "possession": "USER",
-  "ballCarrier": "Lionel Messi",
-  "teamStrategy": "COUNTER_ATTACK",
-  "teamFormation": "4-4-2",
-  "teamCoachName": "Lionel Scaloni",
-  "teamCoachProfile": "REACTIVE",
-  "opponentStrategy": "ATTACK",
-  "opponentFormation": "4-3-3",
-  "opponentCoachName": "Pape Thiaw",
-  "opponentCoachProfile": "BALANCED",
-  "eventType": "KICKOFF_EVENT",
-  "options": [
+  score: string,
+  minute: number,
+  turn: number,
+  zone: string,
+  possession: string,
+  ballCarrier: string,
+  teamStrategy: string,
+  teamFormation: string,
+  teamCoachName: string,
+  teamCoachProfile: string,
+  opponentStrategy: string,
+  opponentFormation: string,
+  opponentCoachName: string,
+  opponentCoachProfile: string,
+  eventType: string,
+  options: [
     {
-      "index": 1,
-      "label": "Atacar",
-      "action": "ATTACK"
+      index: number,
+      label: string,
+      action: string
     }
   ],
-  "isFinished": false,
-  "result": "WIN",
-  "currentContext": {}
+  isFinished: boolean,
+  result: string,
+  currentContext: {}
 }
 
 @Injectable()
