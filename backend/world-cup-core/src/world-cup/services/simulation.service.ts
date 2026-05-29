@@ -183,7 +183,7 @@ export class SimulationService extends AbstractBaseService {
   }
 
   /** Creates a business exception consumed by frontend empty-state logic. */
-  private createFinalUnavailableException(): HttpException {
+  private createSimulationUnavailableException(): HttpException {
     return new HttpException(
       {
         messageCode: WorldCupCoreErrorCode.WC_SIMULATION_UNAVAILABLE,

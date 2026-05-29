@@ -28,6 +28,51 @@ const PLAY_FINAL_API_ERROR_FALLBACK: ApiErrorMappingRule = {
   statusCode: HttpStatus.BAD_GATEWAY,
 };
 
+interface PlayFinalRawResponse {
+  matchId: string,
+  "teamId": "arg",
+  "opponentId": "fra",
+  "teamName": "Argentina",
+  "opponentName": "France",
+  "messageItems": [
+    {
+      "messageKey": "match.start.kickoff.variant.2",
+      "type": "SUBSTITUTION",
+      "text": "Argentina substitution: Leandro Paredes replaces Rodrigo De Paul.",
+      "minute": 53,
+      "turn": 4,
+      "teamId": "arg",
+      "teamName": "Argentina",
+      "playerName": "Leandro Paredes"
+    }
+  ],
+  "score": "1-0",
+  "minute": 35,
+  "turn": 3,
+  "zone": "MIDFIELD",
+  "possession": "USER",
+  "ballCarrier": "Lionel Messi",
+  "teamStrategy": "COUNTER_ATTACK",
+  "teamFormation": "4-4-2",
+  "teamCoachName": "Lionel Scaloni",
+  "teamCoachProfile": "REACTIVE",
+  "opponentStrategy": "ATTACK",
+  "opponentFormation": "4-3-3",
+  "opponentCoachName": "Pape Thiaw",
+  "opponentCoachProfile": "BALANCED",
+  "eventType": "KICKOFF_EVENT",
+  "options": [
+    {
+      "index": 1,
+      "label": "Atacar",
+      "action": "ATTACK"
+    }
+  ],
+  "isFinished": false,
+  "result": "WIN",
+  "currentContext": {}
+}
+
 @Injectable()
 export class PlayFinalService extends AbstractBaseService {
   constructor( private readonly worldCupfeatureApiService: WorldCupFeatureApiService, 
