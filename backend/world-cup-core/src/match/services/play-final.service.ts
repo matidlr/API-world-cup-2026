@@ -68,7 +68,6 @@ constructor(
         opponentId:          matchData.opponentId,
         teamName:            matchData.teamName,
         opponentName:        matchData.opponentName,
-        score:               matchData.score,
         teamGoals:     goals.teamGoals, 
         opponentGoals: goals.opponentGoals,
         minute:              matchData.minute,
