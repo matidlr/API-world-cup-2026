@@ -60,7 +60,7 @@ public async playTurn(
  @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
  public async getStrategy(@Query('lang') lang?: string): Promise<unknown> {
   return this.createOkResponse(
-    this.playFinalService.getStrategies(lang));
+    await this.playFinalService.getStrategies(lang));
  }
 
 }
