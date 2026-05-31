@@ -47,7 +47,6 @@ export class PlayFinalController extends AbstractController {
     required: ['selectedOption'],
   },
 })
-
 public async playTurn(
   @Body('selectedOption') selectedOption: number,
   @Body('lang') lang?: string,
@@ -55,5 +54,13 @@ public async playTurn(
   return this.createOkResponse(
     await this.playFinalService.postPlayTurn(selectedOption, lang));
 }
+
+@Get('strategy')
+@ApiOperation({ summary: 'Play Final - Get strategy' })
+ @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
+ public async getStrategy(@Query('lang') lang?: string): Promise<unknown> {
+  return this.createOkResponse(
+    this.playFinalService.getStrategies(lang));
+ }
 
 }
