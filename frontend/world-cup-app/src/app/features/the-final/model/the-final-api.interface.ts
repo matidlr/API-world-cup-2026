@@ -27,7 +27,8 @@ export interface TheFinalApiResponse {
   opponentName: string;
 
   // marcador
-  score:   string;
+  teamGoals: number;
+  opponentGoals: number;
   minute:  number;
   turn:    number;
 
