@@ -1,5 +1,5 @@
 import { Controller, Get, Query, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AbstractBaseService } from 'src/basic/abstract-base.service';
 import { AbstractController } from 'src/basic/abstract.controller';
 import { PlayFinalService } from '../services/play-final.service';
@@ -35,6 +35,25 @@ export class PlayFinalController extends AbstractController {
     return await this.playFinalService.startFinal(lang);
   }
 
+ @Post('play-turn')
+ @ApiOperation({ summary: 'Play Final - Play one turn' })
+ @ApiBody({
+  schema: {
+    type: 'object',
+    properties: {
+      selectedOption: { type: 'number', example: 2, minimum: 1, maximum: 4 },
+      lang:           { type: 'string', enum: ['es', 'en'], example: 'en' },
+    },
+    required: ['selectedOption'],
+  },
+})
 
+public async playTurn(
+  @Body('selectedOption') selectedOption: number,
+  @Body('lang') lang?: string,
+): Promise<unknown> {
+  return this.createOkResponse(
+    await this.playFinalService.postPlayTurn(selectedOption, lang));
+}
 
 }

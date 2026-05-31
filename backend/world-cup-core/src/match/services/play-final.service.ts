@@ -94,10 +94,10 @@ constructor(
     }
   }
 
-  public async postPlayTurn(lang: string) {
+  public async postPlayTurn(selectedOption: number, lang: string) {
     try {
       const resolvedLang = this.resolveLang(lang);
-      const turn = await this.postEndpointData<PlayFinalModel>('/match/play', {lang: resolvedLang});
+      const turn = await this.postEndpointData<PlayFinalModel>('/match/play', {selectedOption, lang: resolvedLang});
       return{
         messageItems:        this.mapMessageItems(turn.messageItems ?? []),  // ✅
         options:             this.mapOptions(turn.options ?? []),
