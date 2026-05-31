@@ -55,20 +55,20 @@ public async playTurn(
     await this.playFinalService.postPlayTurn(selectedOption, lang));
 }
 
-@Get('strategy')
-@ApiOperation({ summary: 'Play Final - Get strategy' })
+@Post('strategy')
+@ApiOperation({ summary: 'Play Final - Select strategy' })
  @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
- public async getStrategy(@Query('lang') lang?: string): Promise<unknown> {
+ public async selectStrategy(@Query('lang') lang?: string): Promise<unknown> {
   return this.createOkResponse(
-    await this.playFinalService.getStrategies(lang));
+    await this.playFinalService.selectStrategy(lang));
  }
 
- @Get('formations')
-@ApiOperation({ summary: 'Play Final - Get formations' })
+ @Post('formations')
+@ApiOperation({ summary: 'Play Final - Select formations' })
  @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
- public async getFormations(@Query('lang') lang?: string): Promise<unknown> {
+ public async selectFormations(@Query('lang') lang?: string): Promise<unknown> {
   return this.createOkResponse(
-    await this.playFinalService.getFormations(lang));
+    await this.playFinalService.selectFormation(lang));
  }
 
 
