@@ -1,4 +1,4 @@
-import { PlayFinalApiResponse } from './the-final-api.interface';
+import { TheFinalApiResponse } from './the-final-api.interface';
 
 export interface TheFinalViewModel {
   lang:             'es' | 'en';
@@ -6,5 +6,5 @@ export interface TheFinalViewModel {
   errorMessage:     string;
   showNoFinalState: boolean;   
   showWorldCupNotReady: boolean; 
-  data:             PlayFinalApiResponse | null;
+  data:             TheFinalApiResponse | null;
 }
