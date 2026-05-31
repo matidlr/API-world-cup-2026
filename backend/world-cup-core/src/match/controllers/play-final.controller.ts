@@ -55,20 +55,44 @@ public async playTurn(
     await this.playFinalService.postPlayTurn(selectedOption, lang));
 }
 
-@Post('strategy')
+@Post('select-strategy')
 @ApiOperation({ summary: 'Play Final - Select strategy' })
- @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
- public async selectStrategy(@Query('lang') lang?: string): Promise<unknown> {
+@ApiBody({
+  schema: {
+    type: 'object',
+    properties: {
+      strategy: { type: 'string', example: 'ATTACK' },
+      lang:     { type: 'string', enum: ['es', 'en'] },
+    },
+    required: ['strategy'],
+  },
+})
+public async selectStrategy(
+  @Body('strategy') strategy: string,
+  @Body('lang') lang?: string,
+): Promise<unknown> {
   return this.createOkResponse(
-    await this.playFinalService.selectStrategy(lang));
- }
+    await this.playFinalService.selectStrategy(strategy, lang)
+  );
+}
 
  @Post('formations')
 @ApiOperation({ summary: 'Play Final - Select formations' })
  @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
- public async selectFormations(@Query('lang') lang?: string): Promise<unknown> {
+ @ApiBody({
+  schema: {
+    type: 'object',
+    properties: {
+      formation: { type: 'string', example: '4-3-3' },
+      lang:      { type: 'string', enum: ['es', 'en'] },
+    },
+    required: ['formation'],
+  },
+})
+ public async selectFormations( @Body('formation') formation: string,
+                                @Body('lang') lang?: string): Promise<unknown> {
   return this.createOkResponse(
-    await this.playFinalService.selectFormation(lang));
+    await this.playFinalService.selectFormation(formation, lang));
  }
 
 
