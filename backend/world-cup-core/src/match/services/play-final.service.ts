@@ -5,6 +5,7 @@ import { CurrentWorldCupApiResponse } from '../model/play-final-service.interfac
 import { WorldCupApiService } from 'src/basic/world-cup-api.service';
 import { WorldCupCoreErrorCode } from 'src/basic/model/world-cup-core-error-code.enum';
 import { ApiErrorMappingRule, ApiErrorStatusMap, ErrorUtils } from 'src/basic/error/error.utils';
+import { MessageItemsModel, OptionsModel, PlayFinalModel } from './play-final-service.model';
 
 const PLAY_FINAL_UNAVAILABLE_MESSAGE =
   'World Cup simulation is not available yet. Run simulation first.';
@@ -28,50 +29,6 @@ const PLAY_FINAL_API_ERROR_FALLBACK: ApiErrorMappingRule = {
   statusCode: HttpStatus.BAD_GATEWAY,
 };
 
-interface PlayFinalRawResponse {
-  matchId: string,
-  teamId: string,
-  opponentId: string,
-  teamName: string,
-  opponentName: string,
-  messageItems: [
-    {
-      messageKey: string,
-      type: string,
-      text: string,
-      minute: number,
-      turn: number,
-      teamId: string,
-      teamName: string,
-      playerName: string
-    }
-  ],
-  score: string,
-  minute: number,
-  turn: number,
-  zone: string,
-  possession: string,
-  ballCarrier: string,
-  teamStrategy: string,
-  teamFormation: string,
-  teamCoachName: string,
-  teamCoachProfile: string,
-  opponentStrategy: string,
-  opponentFormation: string,
-  opponentCoachName: string,
-  opponentCoachProfile: string,
-  eventType: string,
-  options: [
-    {
-      index: number,
-      label: string,
-      action: string
-    }
-  ],
-  isFinished: boolean,
-  result: string,
-  currentContext: {}
-}
 
 @Injectable()
 export class PlayFinalService extends AbstractBaseService {
@@ -79,91 +36,79 @@ export class PlayFinalService extends AbstractBaseService {
                adminService: AdminService
   ){super(adminService, worldCupApiService)}
 
-  public async getCurrentFinal(lang?: string): Promise<CurrentWorldCupApiResponse>{
+  public async getCurrentFinal(lang?: string) {
+  try {
+    const resolvedLang = this.resolveLang(lang);
+    const teamId = this.getCurrentTeamId();
+
+    const final = await this.postEndpointData<PlayFinalModel>(
+      '/match/start-final',
+      { lang: resolvedLang, teamId },  
+
     
-    try {
-      const resolvedLang = this.resolveLang(lang);
-      const teamId = this.getCurrentTeamId();
-
-          const final =  await this.postEndpointData<PlayFinalRawResponse>('/match/start-final', {resolvedLang, teamId});
-
-      return {
-         matchId: final.matchId,
-         teamId: final.teamId,
-         opponentId: final.opponentId,
-         teamName: final.teamName,
-         opponentName: final.opponentName,
-
-      messageItems: final.messageItems.map(item => ({
-        messageKey: item.messageKey,
-        type: item.type,
-        text: item.text,
-        minute: item.minute,
-        turn: item.turn,
-        teamId: item.teamId,
-        teamName: item.teamName,
-        playerName: item.playerName
-      })),
-
-      score: final.score,
-      minute: final.minute,
-      turn: final.turn,
-      zone: final.zone,
-      possession: final.possession,
-      ballCarrier: final.ballCarrier,
-
-      teamStrategy: final.teamStrategy,
-      teamFormation: final.teamFormation,
-      teamCoachName: final.teamCoachName,
-      teamCoachProfile: final.teamCoachProfile,
-
-      opponentStrategy: final.opponentStrategy,
-      opponentFormation: final.opponentFormation,
-      opponentCoachName: final.opponentCoachName,
-      opponentCoachProfile: final.opponentCoachProfile,
-
-      eventType: final.eventType,
-
-      options: final.options.map(option => ({
-        index: option.index,
-        label: option.label,
-        action: option.action
-      })),
-
-      isFinished: final.isFinished,
-      result: final.result,
-      currentContext: final.currentContext
+    );
+    const know = await this.getEndpointData<CurrentWorldCupApiResponse>(
+      '/world-cup/current',
+      { lang: resolvedLang }
+    )
+    
+    return {
+      matchId:          final.matchId,
+      teamId:           final.teamId,
+      opponentId:       final.opponentId,
+      teamName:         final.teamName,
+      opponentName:     final.opponentName,
+      score:            final.score,
+      minute:           final.minute,
+      turn:             final.turn,
+      zone:             final.zone ?? null,
+      possession:       final.possession ?? null,
+      ballCarrier:      final.ballCarrier ?? null,
+      teamStrategy:     final.teamStrategy ?? null,
+      teamFormation:    final.teamFormation ?? null,
+      teamCoachName:    final.teamCoachName ?? null,
+      teamCoachProfile: final.teamCoachProfile ?? null,
+      opponentStrategy:  final.opponentStrategy ?? null,
+      opponentFormation: final.opponentFormation ?? null,
+      opponentCoachName: final.opponentCoachName ?? null,
+      opponentCoachProfile: final.opponentCoachProfile ?? null,
+      eventType:        final.eventType,
+      isFinished:       final.isFinished,
+      result:           final.result ?? null,
+      messageItems:     this.mapMessageItems(final.messageItems ?? []), 
+      options:          this.mapOptions(final.options ?? []), 
     };
-       
-    } catch (error) {
-      ErrorUtils.mapWorldCupApiError(
-              error,
-              PLAY_FINAL_API_ERROR_STATUS_MAP,
-              PLAY_FINAL_API_ERROR_FALLBACK,
-            );
-    }
-  }
 
-  private hasFinalists(worldCup: CurrentWorldCupApiResponse): boolean {
-    return Boolean(
-      worldCup?.finalHomeTeamId &&
-      worldCup?.finalHomeTeamName &&
-      worldCup?.finalAwayTeamId &&
-      worldCup?.finalAwayTeamName,
+  } catch (error) {
+    ErrorUtils.mapWorldCupApiError(
+      error,
+      PLAY_FINAL_API_ERROR_STATUS_MAP,
+      PLAY_FINAL_API_ERROR_FALLBACK,
     );
   }
+}
 
-  private createPlayFinalUnavailableException(): HttpException {
-      return new HttpException(
-        {
-          messageCode: WorldCupCoreErrorCode.WC_PLAY_FINAL_UNAVAILABLE,
-          message: PLAY_FINAL_UNAVAILABLE_MESSAGE,
-        },
-        HttpStatus.CONFLICT,
-      );
-    }
+private mapMessageItems(items: any[]): MessageItemsModel[] {
+  return items.map(item => new MessageItemsModel({
+    messageKey: item.messageKey ?? null,
+    type:       item.type,
+    text:       item.text,
+    minute:     item.minute,
+    turn:       item.turn,
+    teamId:     item.teamId ?? null,
+    teamName:   item.teamName ?? null,
+    playerName: item.playerName ?? null,
+  }));
+}
 
-    
+private mapOptions(items: any[]): OptionsModel[] {  
+  return items.map(item => new OptionsModel({
+    index:  item.index,
+    label:  item.label,
+    action: item.action,
+  }));
+}
+
 }
 
 
