@@ -59,8 +59,9 @@ constructor(
   public async startFinal(lang?: string) {
     try {
       const resolvedLang = this.resolveLang(lang);
-      const teamId = this.getCurrentTeamId();  // ✅ del .env
+      const teamId = this.getCurrentTeamId(); 
       const matchData = await this.postEndpointData<PlayFinalModel>('/match/start-final', { lang: resolvedLang, teamId });
+      const goals = this.parseScore(matchData.score);
       return {
         matchId:             matchData.matchId,
         teamId:              matchData.teamId,
@@ -68,6 +69,8 @@ constructor(
         teamName:            matchData.teamName,
         opponentName:        matchData.opponentName,
         score:               matchData.score,
+        teamGoals:     goals.teamGoals, 
+        opponentGoals: goals.opponentGoals,
         minute:              matchData.minute,
         turn:                matchData.turn,
         zone:                matchData.zone ?? null,
@@ -223,6 +226,14 @@ public async selectFormation(formation: string, lang?: string) {
       action: item.action,
     }));
   }
+
+  private parseScore(score: string): { teamGoals: number; opponentGoals: number } {
+  const parts = score?.split('-') ?? ['0', '0'];
+  return {
+    teamGoals:     parseInt(parts[0] ?? '0', 10),
+    opponentGoals: parseInt(parts[1] ?? '0', 10),
+  };
+}
 }
 
 
