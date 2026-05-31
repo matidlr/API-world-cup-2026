@@ -63,4 +63,13 @@ public async playTurn(
     await this.playFinalService.getStrategies(lang));
  }
 
+ @Get('formations')
+@ApiOperation({ summary: 'Play Final - Get formations' })
+ @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
+ public async getFormations(@Query('lang') lang?: string): Promise<unknown> {
+  return this.createOkResponse(
+    await this.playFinalService.getFormations(lang));
+ }
+
+
 }
