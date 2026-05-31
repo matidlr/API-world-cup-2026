@@ -56,3 +56,11 @@ export interface TheFinalApiResponse {
   options:  TheFinalOptionApiItem[];
   messages: TheFinalMessageApiItem[];
 }
+
+export interface WorldCupStatusResponse {
+  canStartFinal:     boolean;
+  hasActiveFinal:    boolean;
+  status:            string;
+  finalHomeTeamName: string | null;
+  finalAwayTeamName: string | null;
+}

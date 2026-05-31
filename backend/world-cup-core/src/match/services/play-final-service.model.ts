@@ -207,3 +207,44 @@ export class CurrentWorldCupApiResponse {
     this.updatedAt =         data.updatedAt;
   }
 }
+
+export interface WorldCupStatusResponse {
+  canStartFinal:     boolean;
+  hasActiveFinal:    boolean;
+  status:            string;
+  finalHomeTeamName: string | null;
+  finalAwayTeamName: string | null;
+}
+
+interface StrategyLineImpact {
+  attack:   number;
+  defense:  number;
+  midfield: number;
+}
+
+export interface StrategyRawItem {
+  strategy:             string;
+  description:          string;
+  compatibleFormations: string[];
+  strategyLineImpact:   StrategyLineImpact;
+}
+
+export interface FormationsRawItem {
+    formation: string;
+    description: string;
+    compatibleStrategies: string[];
+}
+
+export interface SelectStrategyResponse {
+  teamId: string,
+  strategy: string,
+  formation: string,
+  formationAutoAdjusted: boolean,
+  message: string
+}
+
+export interface SelectFormationResponse{
+     teamId: string;
+     formation: string;
+     message: string;
+}
