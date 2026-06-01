@@ -39,12 +39,22 @@ export class TheFinalService extends BaseApiService{
         this.theFinalState.loading = true;
         this.theFinalState.errorMessage = '';
 
-        return this.get<TheFinalApiResponse>('/final-match/current', {lang}).pipe(
-            
-        )
-      }
-    
-    
-    
-}
-
+        return this.get<TheFinalApiResponse>('/final-match/current', { lang }).pipe(
+  map((response) => response.data),
+  tap((data) => {
+    this.theFinalState.data = data;
+  }),
+  map(() => undefined),           // ← convierte a Observable<void>
+  catchError((err) => {          
+    const code = err?.error?.responseMessage?.messageCode ?? '';
+    if (code === 'WC_PLAY_FINAL_UNAVAILABLE') {
+      this.theFinalState.showNoFinalState = true;
+    } else {
+      this.theFinalState.errorMessage = 'No se pudo cargar la final.';
+    }
+    this.theFinalState.data = null;
+    return of(undefined);
+  }),
+  finalize(() => (this.theFinalState.loading = false)), 
+);   
+}}
