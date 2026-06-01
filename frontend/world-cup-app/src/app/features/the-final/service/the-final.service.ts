@@ -32,8 +32,24 @@ export class TheFinalService extends BaseApiService{
       getViewModel(): TheFinalViewModel {
         return this.theFinalState;
       }
+
+    initialize(): void {
+        if (this.hasInitialized) {
+            this.loadFinal().subscribe();
+            return;
+  }
+
+        this.hasInitialized = true;
+
+        combineLatest([this.appContextService.currentTeamId$, this.appContextService.lang$])
+            .pipe(
+            tap(([, lang]) => (this.theFinalState.lang = lang === 'en' ? 'en' : 'es')),
+            switchMap(() => this.loadFinal()),
+            )
+            .subscribe();
+}
     
-      private loadFinal(): Observable<void>{
+    private loadFinal(): Observable<void>{
         const lang = this.getCurrentLang();
         this.theFinalState.lang = lang;
         this.theFinalState.loading = true;
