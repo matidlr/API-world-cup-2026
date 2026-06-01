@@ -117,4 +117,50 @@ public startFinal(): void {
   ).subscribe();  // ← subscribe porque es void, no retornás el Observable
 }
 
+public playTurn(option: string): void {
+  // 1. Preparamos la pantalla activando el spinner
+  this.theFinalState.loading = true;
+  this.theFinalState.errorMessage = '';
+
+  // 2. Hacemos el POST al backend mandando la opción elegida y el idioma
+  this.post<TheFinalApiResponse>('/final-match/play-turn', {
+    option,
+    lang: this.theFinalState.lang,
+  })
+  .pipe(
+    // Nos quedamos solo con la data útil de la respuesta de la API
+    map(response => response.data),
+
+    // Usamos tap para actualizar el estado de nuestra pantalla
+    tap(data => {
+      // Si ya tenemos datos previos del partido, actualizamos los campos clave
+      if (this.theFinalState.data) {
+        this.theFinalState.data.options = data.options;
+        this.theFinalState.data.messages = data.messages;
+
+      } else {
+        // Si por alguna razón 'this.theFinalState.data' era null, le asignamos la data completa
+        this.theFinalState.data = data;
+      }
+    }),
+
+    // Atrapamos errores para que no se rompa la aplicación si el servidor falla
+    catchError((error) => {
+      this.theFinalState.errorMessage = 'Hubo un problema al procesar el turno de la final.';
+      // Devolvemos un observable vacío para mantener el flujo cerrado correctamente
+      return of(null); 
+    }),
+
+    // Pase lo que pase (éxito o error), apagamos el spinner de carga
+    finalize(() => {
+      this.theFinalState.loading = false;
+    })
+  )
+  // 3. ¡EL GATILLO! Sin el subscribe(), la petición nunca sale del navegador
+  .subscribe();
+}
+
+
+
+
 }
