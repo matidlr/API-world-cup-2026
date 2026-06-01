@@ -23,7 +23,7 @@ export class TheFinalService extends BaseApiService{
       loading:          false,
       errorMessage:     '',
       showNoFinalState: false,   
-      showWorldCupNotReady: true, 
+      showWorldCupNotReady: false, 
       data:    null,
     }
 
