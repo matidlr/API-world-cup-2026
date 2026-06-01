@@ -1,23 +1,3 @@
-// play-final-api.interface.ts
-
-export interface TheFinalOptionApiItem {
-  index:  number;
-  label:  string;
-  action: string;
-}
-
-export interface TheFinalMessageApiItem {
-  type:        string;
-  text:        string;
-  minute:      number;
-  minuteLabel: string;
-  turn:        number;
-  teamId:      string | null;
-  teamName:    string | null;
-  playerName:  string | null;
-  icon:        string;
-}
-
 export interface TheFinalApiResponse {
   // identidad
   matchId:     string;
@@ -57,6 +37,26 @@ export interface TheFinalApiResponse {
   options:  TheFinalOptionApiItem[];
   messages: TheFinalMessageApiItem[];
 }
+
+export interface TheFinalOptionApiItem {
+  index:  number;
+  label:  string;
+  action: string;
+}
+
+export interface TheFinalMessageApiItem {
+  type:        string;
+  text:        string;
+  minute:      number;
+  minuteLabel: string;
+  turn:        number;
+  teamId:      string | null;
+  teamName:    string | null;
+  playerName:  string | null;
+  icon:        string;
+}
+
+
 
 export interface WorldCupStatusResponse {
   canStartFinal:     boolean;
