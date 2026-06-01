@@ -29,11 +29,11 @@ export class TheFinalService extends BaseApiService{
 
     private hasInitialized = false;
     
-      getViewModel(): TheFinalViewModel {
+getViewModel(): TheFinalViewModel {
         return this.theFinalState;
       }
 
-    initialize(): void {
+initialize(): void {
         if (this.hasInitialized) {
             this.loadFinal().subscribe();
             return;
@@ -49,13 +49,13 @@ export class TheFinalService extends BaseApiService{
             .subscribe();
 }
     
-    private loadFinal(): Observable<void>{
+private loadFinal(): Observable<void>{
         const lang = this.getCurrentLang();
         this.theFinalState.lang = lang;
         this.theFinalState.loading = true;
         this.theFinalState.errorMessage = '';
 
-        return this.get<TheFinalApiResponse>('/final-match/current', { lang }).pipe(
+    return this.get<TheFinalApiResponse>('/final-match/current', { lang }).pipe(
   map((response) => response.data),
   tap((data) => {
     this.theFinalState.data = data;
@@ -73,4 +73,48 @@ export class TheFinalService extends BaseApiService{
   }),
   finalize(() => (this.theFinalState.loading = false)), 
 );   
-}}
+}
+
+public startFinal(): void {
+  // 1. activás el loading
+  this.theFinalState.loading = true;
+  this.theFinalState.errorMessage = '';
+  this.theFinalState.showNoFinalState = false;
+
+  // 2. POST porque el backend usa postEndpointData
+  //    URL del controller: /final-match/start
+  //    solo mandás lang, el teamId lo resuelve el backend
+  this.post<TheFinalApiResponse>('/final-match/start', {
+    lang: this.theFinalState.lang,
+  }).pipe(
+
+    // 3. desempaquetás el wrapper { success, data, serverTime }
+    map(response => response.data),
+
+    // 4. guardás la data en el estado
+    //    los campos que llegan son exactamente los del return del backend:
+    //    matchId, teamId, teamName, teamGoals, opponentGoals,
+    //    minute, turn, zone, possession, options, messageItems...
+    tap(data => {
+      this.theFinalState.data = data;
+    }),
+
+    // 5. manejás errores
+    catchError(err => {
+      const code = err?.error?.responseMessage?.messageCode ?? '';
+      if (code === 'WC_PLAY_FINAL_UNAVAILABLE') {
+        this.theFinalState.showNoFinalState = true;
+      } else {
+        this.theFinalState.errorMessage = 'No se pudo iniciar la final.';
+      }
+      this.theFinalState.data = null;
+      return of(undefined);
+    }),
+
+    // 6. siempre apagás el loading al terminar
+    finalize(() => (this.theFinalState.loading = false)),
+
+  ).subscribe();  // ← subscribe porque es void, no retornás el Observable
+}
+
+}

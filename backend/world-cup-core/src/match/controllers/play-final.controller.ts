@@ -10,7 +10,7 @@ import { PlayFinalModel, WorldCupStatusResponse } from '../services/play-final-s
 export class PlayFinalController extends AbstractController {
   constructor(private readonly playFinalService: PlayFinalService){super()}
 
-   @Get('current')
+@Get('current')
      @ApiOperation({ summary: 'Play final- Cuurent final' })
      @ApiQuery({ name: 'lang', required: false, enum: ['es', 'en'] })
      public async getFinal(@Query('lang') lang?: string): Promise<unknown> {
