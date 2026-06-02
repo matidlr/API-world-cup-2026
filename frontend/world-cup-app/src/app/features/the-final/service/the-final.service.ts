@@ -160,7 +160,9 @@ public playTurn(option: string): void {
   .subscribe();
 }
 
-
+public getStrategies() {
+    
+}
 
 
 }

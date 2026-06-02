@@ -65,3 +65,21 @@ export interface WorldCupStatusResponse {
   finalHomeTeamName: string | null;
   finalAwayTeamName: string | null;
 }
+
+export interface StrategyLineImpact {
+  attack: number;
+  defense: number;
+  midfield: number;
+}
+
+export interface StrategyViewModelItem {
+  strategy: string;
+  description: string;
+  compatibleFormations: string[];
+  strategyLineImpact: StrategyLineImpact;
+}
+
+
+export interface StrategiesApiResponse {
+  data: StrategyViewModelItem[];
+}
