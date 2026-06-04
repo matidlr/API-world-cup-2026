@@ -3,7 +3,7 @@ import { ApiOperation, ApiQuery, ApiTags, ApiResponse, ApiBody } from '@nestjs/s
 import { AbstractBaseService } from 'src/basic/abstract-base.service';
 import { AbstractController } from 'src/basic/abstract.controller';
 import { PlayFinalService } from '../services/play-final.service';
-import { PlayFinalModel, WorldCupStatusResponse } from '../services/play-final-service.model';
+import { PlayFinalModel, WorldCupStatusResponse } from '../model/play-final-service.model';
 
 @ApiTags('final-match')
 @Controller('final-match')

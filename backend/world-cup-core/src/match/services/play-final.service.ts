@@ -4,7 +4,7 @@ import { AbstractBaseService } from 'src/basic/abstract-base.service';
 import { WorldCupApiService } from 'src/basic/world-cup-api.service';
 import { WorldCupCoreErrorCode } from 'src/basic/model/world-cup-core-error-code.enum';
 import { ApiErrorMappingRule, ApiErrorStatusMap, ErrorUtils } from 'src/basic/error/error.utils';
-import { CurrentWorldCupApiResponse, MessageItemsModel, OptionsModel, PlayFinalModel, WorldCupStatusResponse, StrategyRawItem, FormationsRawItem, SelectStrategy, SelectStrategyResponse, SelectFormationResponse } from './play-final-service.model';
+import { CurrentWorldCupApiResponse, MessageItemsModel, OptionsModel, PlayFinalModel, WorldCupStatusResponse, StrategyRawItem, FormationsRawItem, SelectStrategy, SelectStrategyResponse, SelectFormationResponse } from '../model/play-final-service.model';
 
 const PLAY_FINAL_UNAVAILABLE_MESSAGE =
   'World Cup simulation is not available yet. Run simulation first.';
